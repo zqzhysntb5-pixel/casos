@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCAE Evaluación Completa</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI, Arial;
+  background: linear-gradient(135deg,#e6f4ff,#f8fcff);
+  padding:20px;
+}
+
+.container{
+  max-width:1000px;
+  margin:auto;
+  background:white;
+  padding:25px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+h1{text-align:center;color:#0c4a6e;}
+
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+button{
+  display:block;
+  margin:10px auto;
+  padding:12px 18px;
+  border:none;
+  border-radius:10px;
+  background:#0284c7;
+  color:white;
+  cursor:pointer;
+}
+
+button:hover{background:#0369a1;}
+
+.section{
+  margin-top:15px;
+  padding:15px;
+  border-radius:12px;
+  background:#f7fbff;
+  border:1px solid #dbeafe;
+}
+
+#caso{
+  padding:15px;
+  background:#eef6ff;
+  border-radius:10px;
+  margin-top:15px;
+  white-space:normal;
+  overflow-wrap:break-word;
+}
+
+.score{
+  font-size:22px;
+  font-weight:bold;
+  text-align:right;
+  color:#0c4a6e;
+}
+
+label{
+  display:block;
+  margin:6px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🏥 Casos Prácticos TCAE</h1>
+
+<label>Nombre del alumno</label>
+<input id="nombre">
+
+<button onclick="generarCaso()">Generar caso</button>
+
+<div id="caso">Pulsa generar caso</div>
+
+<hr>
+
+<!-- CHECKLIST COMPLETO RESTAURADO -->
+<div class="section">
+<h3>1. Cambio postural (3 puntos)</h3>
+
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Seguridad del entorno</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Alineación corporal</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Protección del paciente</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Técnica correcta</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Mecánica corporal</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Seguridad global</label>
+</div>
+
+<div class="section">
+<h3>2. Cabecero (1,5 puntos)</h3>
+<label><input type="checkbox" data-puntos="0.75" onchange="calc()"> Técnica correcta</label>
+<label><input type="checkbox" data-puntos="0.75" onchange="calc()"> Participación del paciente</label>
+</div>
+
+<div class="section">
+<h3>3. Silla de ruedas (2,5 puntos)</h3>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Frenos correctos</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Posición adecuada</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Transferencia segura</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Control del paciente</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Ayuda adecuada</label>
+</div>
+
+<div class="section">
+<h3>4. Muletas (2 puntos)</h3>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Explicación correcta</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Demostración</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Técnica adecuada</label>
+<label><input type="checkbox" data-puntos="0.5" onchange="calc()"> Seguridad en marcha</label>
+</div>
+
+<!-- FALLOS -->
+<div class="section">
+<h3>5. Fallos (-0,5 cada uno)</h3>
+<textarea id="fallos" oninput="calc()" placeholder="Escribe un fallo por línea"></textarea>
+</div>
+
+<div class="section">
+<div class="score" id="nota">10 / 10</div>
+</div>
+
+<button onclick="generarPDF()">📄 Generar PDF</button>
+
+</div>
+
+<script>
+
+/* CASOS ORIGINALES */
+const bloque1 = [
+"Realice el cambio postural del paciente desde decúbito supino a decúbito lateral izquierdo aplicando las medidas de seguridad y ergonomía adecuadas.",
+"Coloque al paciente en decúbito lateral derecho partiendo desde la posición de decúbito supino, manteniendo una correcta alineación corporal.",
+"Lleve a cabo la movilización del paciente desde decúbito supino a decúbito prono siguiendo el procedimiento adecuado."
+];
+
+const bloque2 = [
+"Suba al paciente colaborador hacia el cabecero de la cama solicitando su participación activa durante la movilización.",
+"Realice la movilización de un paciente no colaborador hacia el cabecero de la cama utilizando la técnica adecuada."
+];
+
+const bloque3 = [
+"Transfiera al paciente colaborador a la silla de ruedas siguiendo las normas básicas de movilización y prevención de caídas.",
+"Lleve a cabo la transferencia de un paciente no colaborador a silla de ruedas utilizando ayuda completa del personal sanitario."
+];
+
+const bloque4 = [
+"Enseñe al paciente el uso correcto de una muleta para favorecer una deambulación segura.",
+"Explique y demuestre al paciente la técnica de marcha con muletas a dos tiempos.",
+"Realice la enseñanza práctica de la marcha con muletas a tres tiempos.",
+"Indique al paciente cómo realizar correctamente la marcha con muletas a cuatro tiempos."
+];
+
+let notaGlobal = 10;
+
+function generarCaso(){
+
+document.getElementById("caso").innerHTML =
+"<ul>" +
+"<li>"+bloque1[Math.floor(Math.random()*bloque1.length)]+"</li>" +
+"<li>"+bloque2[Math.floor(Math.random()*bloque2.length)]+"</li>" +
+"<li>"+bloque3[Math.floor(Math.random()*bloque3.length)]+"</li>" +
+"<li>"+bloque4[Math.floor(Math.random()*bloque4.length)]+"</li>" +
+"</ul>";
+
+calc();
+}
+
+function calc(){
+
+let nota = 0;
+
+document.querySelectorAll("input[type=checkbox]").forEach(c=>{
+if(c.checked){
+nota += parseFloat(c.dataset.puntos);
+}
+});
+
+let fallos = document.getElementById("fallos").value.trim();
+let numFallos = fallos ? fallos.split("\n").filter(f=>f.trim()!=="").length : 0;
+
+nota -= numFallos * 0.5;
+
+if(nota > 10) nota = 10;
+if(nota < 0) nota = 0;
+
+notaGlobal = nota;
+
+document.getElementById("nota").innerText = nota.toFixed(1) + " / 10";
+}
+
+function generarPDF(){
+
+try{
+
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF();
+
+let nombre = document.getElementById("nombre").value || "Sin nombre";
+let caso = document.getElementById("caso").innerText;
+let fallosTexto = document.getElementById("fallos").value || "";
+
+let y = 20;
+
+doc.setFontSize(16);
+doc.text("Evaluación TCAE", 20, y); y += 10;
+
+doc.setFontSize(12);
+doc.text("Alumno: " + nombre, 20, y); y += 10;
+
+/* CASO */
+let casoLines = doc.splitTextToSize(String(caso), 170);
+doc.text("Caso:", 20, y); y += 8;
+doc.text(casoLines, 20, y);
+y += casoLines.length * 6 + 10;
+
+/* ERRORES CHECKLIST */
+doc.text("Errores del checklist:", 20, y); y += 8;
+
+let erroresChecklist = [];
+
+document.querySelectorAll("input[type=checkbox]").forEach(c=>{
+if(!c.checked){
+
+let label = c.closest("label");
+let texto = label ? label.innerText.trim() : "Ítem sin texto";
+
+erroresChecklist.push(texto);
+}
+});
+
+if(erroresChecklist.length === 0){
+doc.text("Sin errores en checklist", 25, y);
+y += 8;
+}else{
+erroresChecklist.forEach(e=>{
+let safeText = String(e);
+let lines = doc.splitTextToSize("- " + safeText, 160);
+doc.text(lines, 25, y);
+y += lines.length * 6;
+});
+}
+
+y += 10;
+
+/* FALLOS ESCRITOS */
+doc.text("Fallos escritos:", 20, y); y += 8;
+
+let fallosLines = doc.splitTextToSize(fallosTexto || "Ninguno", 160);
+doc.text(fallosLines, 20, y);
+y += fallosLines.length * 6 + 10;
+
+/* NOTA */
+doc.text("Nota final: " + notaGlobal.toFixed(1), 20, y);
+
+doc.save("tcae_evaluacion.pdf");
+
+}catch(err){
+console.error("ERROR PDF:", err);
+alert("Error generando PDF. Revisa consola.");
+}
+
+}
+</script>
+
+</body>
+</html>
