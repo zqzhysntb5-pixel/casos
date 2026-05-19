@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Casos Prácticos TCAE</title>
+
+  <style>
+
+    *{
+      box-sizing: border-box;
+    }
+
+    body{
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(rgba(230,245,255,0.92), rgba(230,245,255,0.92)),
+        url("https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=1600&auto=format&fit=crop");
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .contenedor{
+      width: 100%;
+      max-width: 900px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(4px);
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+      border: 3px solid #d9eefc;
+    }
+
+    .cabecera{
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .icono{
+      font-size: 70px;
+      margin-bottom: 10px;
+    }
+
+    h1{
+      margin: 0;
+      color: #0c4a6e;
+      font-size: 2.4rem;
+    }
+
+    .subtitulo{
+      margin-top: 10px;
+      color: #4b5563;
+      font-size: 1.05rem;
+    }
+
+    .boton{
+      display: block;
+      margin: 0 auto 35px auto;
+      padding: 18px 35px;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 8px 18px rgba(2,132,199,0.35);
+    }
+
+    .boton:hover{
+      transform: translateY(-3px) scale(1.02);
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+    }
+
+    #resultado{
+      background: #f8fcff;
+      border-radius: 20px;
+      padding: 30px;
+      border: 2px solid #cfe8f7;
+      min-height: 220px;
+      position: relative;
+    }
+
+    #resultado::before{
+      content: "🩺";
+      position: absolute;
+      top: -18px;
+      left: 20px;
+      background: white;
+      padding: 5px 10px;
+      font-size: 28px;
+      border-radius: 12px;
+    }
+
+    ul{
+      margin: 0;
+      padding-left: 30px;
+    }
+
+    li{
+      margin-bottom: 22px;
+      line-height: 1.7;
+      font-size: 18px;
+      color: #1f2937;
+    }
+
+    .mensaje{
+      text-align: center;
+      color: #6b7280;
+      font-size: 18px;
+      margin-top: 40px;
+    }
+
+    .pie{
+      text-align: center;
+      margin-top: 25px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    @media(max-width:700px){
+
+      .contenedor{
+        padding: 25px;
+      }
+
+      h1{
+        font-size: 2rem;
+      }
+
+      .boton{
+        width: 100%;
+      }
+
+      li{
+        font-size: 16px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="contenedor">
+
+    <div class="cabecera">
+      <div class="icono">🏥</div>
+      <h1>Generador de Casos Prácticos TCAE</h1>
+      <div class="subtitulo">
+        Movilización, transferencias y ayuda a la deambulación
+      </div>
+    </div>
+
+    <button class="boton" onclick="generarCaso()">
+      GENERAR CASO PRÁCTICO
+    </button>
+
+    <div id="resultado">
+      <div class="mensaje">
+        Pulse el botón para generar un caso práctico aleatorio.
+      </div>
+    </div>
+
+    <div class="pie">
+      Formación sanitaria · Técnicas básicas de enfermería
+    </div>
+
+  </div>
+
+  <script>
+
+    const bloque1 = [
+      "Realice el cambio postural del paciente desde decúbito supino a decúbito lateral izquierdo aplicando las medidas de seguridad y ergonomía adecuadas.",
+      "Coloque al paciente en decúbito lateral derecho partiendo desde la posición de decúbito supino, manteniendo una correcta alineación corporal.",
+      "Lleve a cabo la movilización del paciente desde decúbito supino a decúbito prono siguiendo el procedimiento adecuado."
+    ];
+
+    const bloque2 = [
+      "Suba al paciente colaborador hacia el cabecero de la cama solicitando su participación activa durante la movilización.",
+      "Realice la movilización de un paciente no colaborador hacia el cabecero de la cama utilizando la técnica adecuada."
+    ];
+
+    const bloque3 = [
+      "Transfiera al paciente colaborador a la silla de ruedas siguiendo las normas básicas de movilización y prevención de caídas.",
+      "Lleve a cabo la transferencia de un paciente no colaborador a silla de ruedas utilizando ayuda completa del personal sanitario."
+    ];
+
+    const bloque4 = [
+      "Enseñe al paciente el uso correcto de una muleta para favorecer una deambulación segura.",
+      "Explique y demuestre al paciente la técnica de marcha con muletas a dos tiempos.",
+      "Realice la enseñanza práctica de la marcha con muletas utilizando la técnica a tres tiempos.",
+      "Indique al paciente cómo realizar correctamente la marcha con muletas a cuatro tiempos."
+    ];
+
+    function fraseAleatoria(array){
+      return array[Math.floor(Math.random() * array.length)];
+    }
+
+    function generarCaso(){
+
+      const caso = [
+        fraseAleatoria(bloque1),
+        fraseAleatoria(bloque2),
+        fraseAleatoria(bloque3),
+        fraseAleatoria(bloque4)
+      ];
+
+      let html = "<ul>";
+
+      caso.forEach(frase => {
+        html += `<li>${frase}</li>`;
+      });
+
+      html += "</ul>";
+
+      document.getElementById("resultado").innerHTML = html;
+    }
+
+  </script>
+
+</body>
+</html>
